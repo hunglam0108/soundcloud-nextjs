@@ -1,16 +1,16 @@
 import * as React from 'react';
 import Container from '@mui/material/Container';
-import MainSlider from './components/slider/slider';
-import { sendRequest } from './profile/api';
+import MainSlider from '../components/slider/slider';
+import { sendRequest } from '../api/api';
 
 const getDataList = async (category: 'CHILL' | 'WORKOUT' | 'PARTY') => {
   try {
-    const response = await sendRequest<IBackendRes<any>>({
+    const response = await sendRequest<IBackendRes<DataMusicType[]>>({
       url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/top`,
       method: "POST",
       body: {
         category,
-        limit: 10
+        limit: 20
       }
     })
     return { response };
@@ -20,9 +20,10 @@ const getDataList = async (category: 'CHILL' | 'WORKOUT' | 'PARTY') => {
 }
 
 export default async function Home() {
-  const chillList = (await getDataList('CHILL')).response?.data
-  const workoutList = (await getDataList('WORKOUT')).response?.data
-  const partyList = (await getDataList('PARTY')).response?.data
+  const chillList = (await getDataList('CHILL')).response?.data ?? []
+  const workoutList = (await getDataList('WORKOUT')).response?.data ?? []
+  const partyList = (await getDataList('PARTY')).response?.data ?? []
+  
   return (
     <Container>
       <MainSlider data={chillList} title='Play List Top Chill'></MainSlider>

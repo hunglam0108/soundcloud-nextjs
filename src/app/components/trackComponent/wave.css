@@ -112,3 +112,13 @@
 .duration {
   right: 20px;
 }
+.commentContainer {
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 20px;
+}
+.likeContainer {
+  padding-top: 10px;
+  display: flex;
+  justify-content: space-between;
+}

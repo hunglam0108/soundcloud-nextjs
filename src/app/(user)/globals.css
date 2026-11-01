@@ -9,6 +9,10 @@
   padding: 0
 }
 
+nextjs-portal {
+  display: none;
+}
+
 .mui-rux501{
   margin: 0
 }

@@ -9,10 +9,15 @@ import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
-import { alpha, InputBase, Menu, MenuItem, styled } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { signOut } from 'next-auth/react';
+import { alpha, styled } from '@mui/material/styles';
+import InputBase from '@mui/material/InputBase';
+import Menu from '@mui/material/Menu/Menu';
+import MenuItem from '@mui/material/MenuItem/MenuItem';
 
 const pages = [
   { 
@@ -29,22 +34,24 @@ const pages = [
   }
 ];
 
-const settings = [
-  { 
-    title: 'Profile',
-    link: '/profile'
-  },
-  { 
-    title: 'Logout',
-    link: '/logout'
-  }
-];
-
-function ResponsiveAppBar() {
+const ResponsiveAppBar = () => {
+  const { data: session } = useSession()
   const router = useRouter()
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-
+  const settings = [
+    { 
+      title: 'Profile',
+      link: `/profile/${session?.user?._id}`
+    },
+    { 
+      title: 'Logout',
+      link: '#',
+      onClick: () => {
+        signOut({ callbackUrl: '/', redirect: true })
+      }
+    }
+  ];
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -120,7 +127,7 @@ function ResponsiveAppBar() {
               textDecoration: 'none',
             }}
           >
-            SOUNDCLOUD
+            NHACCUATAO
           </Typography>
           <Search>
             <SearchIconWrapper>
@@ -131,52 +138,65 @@ function ResponsiveAppBar() {
               inputProps={{ 'aria-label': 'search' }}
             />
           </Search>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'right', gap: '5px' }}>
-            {pages.map((page) => (
-              <Button
-                key={page.title}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                <Link href={page.link}>
-                  {page.title}
-                </Link>
-              </Button>
-            ))}
-          </Box>
-          <Box sx={{ flexGrow: 0, paddingLeft: '10px' }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Hung Lam" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting.title} onClick={handleCloseUserMenu}>
-                  <Typography sx={{ textAlign: 'center' }}>
-                    <Link href={setting.link}>
-                      {setting.title}
-                    </Link>
-                  </Typography>
-                </MenuItem>
+          {session ?
+          (<>
+            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'right', gap: '5px' }}>
+              {pages.map((page) => (
+                <Button
+                  key={page.title}
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: 'white', display: 'block' }}
+                >
+                  <Link href={page.link}>
+                    {page.title}
+                  </Link>
+                </Button>
               ))}
-            </Menu>
-          </Box>
+            </Box>
+            <Box sx={{ flexGrow: 0, paddingLeft: '10px' }}>
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar src={session.user?.image ?? ''}>{session.user?.name ?? ''}</Avatar>
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: '45px' }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                {settings.map((setting) => (
+                  <MenuItem key={setting.title} onClick={handleCloseUserMenu}>
+                    <Typography sx={{ textAlign: 'center' }}>
+                      <Link href={setting.link} onClick={setting.onClick}>
+                        {setting.title}
+                      </Link>
+                    </Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
+          </>)
+          : session === null ?
+            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'right', gap: '5px' }}>
+              <Typography sx={{ textAlign: 'center' }}>
+                <Link href={'/auth/signin'}>
+                  {'LOGIN'}
+                </Link>
+              </Typography>
+            </Box>
+            : <></>
+          }
         </Toolbar>
       </Container>
     </AppBar>

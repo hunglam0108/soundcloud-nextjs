@@ -14,5 +14,5 @@ export default function ThemeRegistry({ children }: { children: React.ReactNode 
         {children}
       </ThemeProvider>
     </NextAppDirEmotionCacheProvider>
-  );
+  )
 }

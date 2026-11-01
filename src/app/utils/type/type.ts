@@ -32,6 +32,7 @@ declare global {
         useCredentials?: boolean;
         headers?: any;
         nextOption?: any;
+        formData?: boolean;
     }
 
     interface IBackendRes<T> {
@@ -51,4 +52,41 @@ declare global {
         result: T[]
     }
 
+    interface StyleObject {
+        [key: string]: React.CSSProperties;
+    }
+
+    interface MusicData {
+        fileName: string
+    }
+
+    interface ITrackTop {
+        title: string
+        description: string
+    }
+
+    interface TrackInfo {
+        _id: string
+        category: string
+        countLike: number
+        countPlay: number
+        description: string
+        title: string
+        trackUrl: string
+        imgUrl: string
+    }
+
+    interface PlaylistData {
+        _id: string
+        title: string
+        isPublic: boolean
+        user: {
+            _id: string
+            userName: string
+            email: string
+            role: string
+            type: string
+        }
+        tracks: TrackInfo[]
+    }
 }

@@ -1,0 +1,25 @@
+.MuiInputAdornment-root {
+  display: none;
+}
+.form-signin {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  flex-direction: column;
+  display: flex;
+  text-align: center;
+  width: 500px;
+  padding: 20px;
+}
+.input-form {
+  padding: 25px;
+  padding-top: 40px;
+  width: 100%;
+}
+.button-login {
+  margin-left: 8px;
+  margin-right: 8px;
+  margin-top: 20px;
+}
+.provider-list {
+  padding-left: 25px;
+  padding-right: 25px;
+}

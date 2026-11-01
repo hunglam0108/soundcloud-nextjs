@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect } from "react";
 import Slider, { Settings } from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -7,14 +7,15 @@ import { Box, Button, Divider, Typography } from "@mui/material";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import Link from "next/link";
 import { ImgLink } from "@/app/utils/constant";
+import { convertSlugUrl } from "@/app/utils/commonFunction";
+import { useRouter } from "next/navigation";
 
 interface PropsSlide {
   data: DataMusicType[]
   title: string
 }
-const MainSlider = (props: PropsSlide) => {
-  const { data, title } = props
-  const NextArrow = (props: any) => {
+
+const NextArrow = (props: any) => {
     return (
       <Button 
         variant="contained" 
@@ -59,48 +60,67 @@ const MainSlider = (props: PropsSlide) => {
     slidesToShow: 5,
     slidesToScroll: 1,
     nextArrow: <NextArrow/>,
-    prevArrow: <PrevArrow/>,
+    prevArrow: <PrevArrow/>
   }
 
+const MainSlider = (props: PropsSlide) => {
+  const { data, title } = props
+  
   return (
     <div className="slider-container">
-        <Typography sx={{ paddingLeft: '60px', paddingY: '20px', fontWeight: 'bold'}}>
-            {title}
-        </Typography>
-        <Box 
-          sx={{
-            margin: "0 50px",
-            ".element": {
-              padding: "0 10px"
-            },
-            "h4": {
-              fontWeight: 'bold',
-              paddingTop: '7px'
-            },
-            "h5": {
-              paddingTop: '5px'
-            }
-          }}
-        >
-          <div>
-            <Slider {...settings}>
-              {data.map((track) => (
-                <div className="element" key={track._id}>
-                  <img src={`${ImgLink}/${track.imgUrl}`}></img>
+      <Typography sx={{ paddingLeft: '60px', paddingY: '20px', fontWeight: 'bold'}}>
+          {title}
+      </Typography>
+      <Box 
+        sx={{
+          margin: "0 50px",
+          ".element": {
+            padding: "0 10px",
+            height: '100%'
+          },
+          "h4": {
+            fontWeight: 'bold',
+            paddingTop: '7px',
+            overflowWrap: 'break-word',
+            maxHeight: '60px',
+            overflow: 'hidden'
+          },
+          "h5": {
+            paddingTop: '5px',
+            overflowWrap: 'break-word'
+          },
+          ".img": {
+            height: '180px'
+          },
+          ".description": {
+            marginTop: 'auto'
+          }
+        }}
+      >
+        <div>
+          <Slider {...settings}>
+            {data.map((track) => (
+              <div className="element" key={track._id}>
+                <img className='img' src={`${ImgLink}/${track.imgUrl}`}></img>
+                <div className="description">
                   <Link 
-                    href={`/track/${track._id}?audio=${track.trackUrl}
-                        &img=${track.imgUrl}
-                        &title=${track.title}
-                        &des=${track.description}`}>
+                    href={`/track/${convertSlugUrl(track.title)}-${track._id}?audio=${track.trackUrl}
+                      &img=${track.imgUrl}
+                      &title=${track.title}
+                      &countPlay=${track.countPlay}
+                      &countLike=${track.countLike}
+                      &des=${track.description}`}>
                     <h4>{track.title}</h4>
                   </Link>
                   <h5>{track.description}</h5>
                 </div>
-              ))}
-            </Slider>
-            <Divider/>
-          </div>
-        </Box>
+                
+              </div>
+            ))}
+          </Slider>
+          <Divider/>
+        </div>
+      </Box>
     </div>
   );
 }
